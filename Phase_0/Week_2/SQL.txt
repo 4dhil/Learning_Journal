@@ -1,0 +1,243 @@
+**DDL & DML**
+
+CREATE TABLE teachers (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    first_name varchar(25) NOT NULL,
+    last_name varchar(50),
+    school varchar(50) NOT NULL,
+    hire_date date,
+    salary numeric
+    );
+   -- Auto_increment gunanya saat
+
+CREATE TABLE courses (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name varchar(20),
+    teachers_id INT,
+    total_students INT
+    );
+    
+INSERT INTO courses (name, teachers_id, total_students)
+    VALUES  ('Calculus', 2, 20),
+            ('Physics', 2, 10),
+            ('Calculus', 1, 30),
+            ('Computer Science', 1, 20),
+            ('Politic', 4, 15),
+            ('Algebra', 2, 10),
+            ('Algebra', 13, 30),
+            ('Computer Science', 10, 35),
+            ('Life Science', 11, 20),
+            ('Chemistry', 9, 22),
+            ('Chemistry', 8, 16),
+            ('Calculus', 5, 19),
+            ('Politic', 4, 17),
+            ('Biology', 6, 22),
+            ('Physics', 3, 29),
+            ('Biology', 8, 28),
+            ('Calculus', 12, 34),
+            ('Physics', 13, 34),
+            ('Biology', 14, 25),
+            ('Calculus', 15, 20);
+    
+    -- Menambahkan column Ageteachers
+    ALTER TABLE teachers ADD age INT
+    
+    -- Menghapus column Age
+    ALTER TABLE teachers DROP COLUMN age
+    
+    -- Rename table teachers menjadi guru
+    ALTER TABLE teachers RENAME TO guru
+    
+    -- Mengganti tipe data column salary
+    ALTER TABLE guru MODIFY COLUMN salary INT
+    
+    -- Mengganti nama column first_name
+    ALTER TABLE guru CHANGE COLUMN first_name nama_depan VARCHAR(25)
+    
+    -- Menganti nama column nama_depan
+    ALTER TABLE guru CHANGE COLUMN nama_depan first_name VARCHAR(25)
+    
+    -- Mengganti name table ke teachers
+    ALTER TABLE guru RENAME to teachers
+    
+    -- Insert data ke database with param id
+    INSERT INTO teachers (id,first_name, last_name, school, hire_date, salary)
+     VALUES (1,'Janet', 'Smith', 'MIT', '2011-10-30', 36200),
+             (2,'Lee', 'Reynolds', 'MIT', '1993-05-22', 65000),
+             (3,'Samuel', 'Cole', 'Cambridge University', '2005-08-01', 43500),
+             (4,'Samantha', 'Bush', 'Cambridge University', '2011-10-30', 36200),
+             (5,'Betty', 'Diaz', 'Cambridge University', '2005-08-30', 43500),
+             (6,'Kathleen', 'Roush', 'MIT', '2010-10-22', 38500),
+             (7,'James', 'Diaz', 'Harvard University', '2003-07-18', 61000),
+             (8,'Zack', 'Smith', 'Harvard University', '2000-12-29', 55500),
+             (9,'Luis', 'Gonzales', 'Standford University', '2002-12-01', 50000),
+             (10,'Frank', 'Abbers', 'Standford University', '1999-01-30', 66000);
+             
+-- Update Salary 'Janet Smith'
+UPDATE teachers
+SET salary = 50000
+WHERE first_name = 'Janet' 
+
+-- Delete id = 10
+DELETE FROM teachers
+where id = 10
+
+-- Insert Data 2 without param id
+INSERT INTO teachers (first_name, last_name, school, hire_date, salary)
+    VALUES ('Samuel', 'Abbers', 'Standford University', '2006-01-30', 32000),
+           ('Jessica', 'Abbers', 'Standford University', '2005-01-30', 33000),
+           ('Tom', 'Massi', 'Harvard University', '1999-09-09', 39500),
+           ('Esteban', 'Brown', 'MIT', '2007-01-30', 36000),
+           ('Carlos', 'Alonso', 'Standford University', '2001-01-30', 44000);
+           
+-- Menghapus Semua Data
+TRUNCATE TABLE teachers
+
+-- Menghapus table "teacher"
+DROP TABLE teachers
+
+**DQL**
+-- Get all Data
+SELECT * FROM teachers
+
+-- Get id, first_name, last_name
+SELECT id, first_name, last_name
+FROM teachers
+
+-- Membatasi jumlah output menjadi 4
+SELECT *
+FROM teachers
+LIMIT 0, 4
+
+-- Mengurutkan data berdasarkan column "first_name"
+SELECT * 
+FROM teachers 
+ORDER BY first_name ASC
+
+-- Mencari dosen yang mengajar di Harvard University
+SELECT *
+FROM teachers
+WHERE school = 'Harvard University'
+
+-- Mencari dosen yang mengajar di HArvard Uni atau Stanford Uni
+SELECT *
+FROM teachers
+WHERE school = 'Harvard University' OR school = 'Standford University'
+
+-- Mencari dosen yang mengajar di HArvard Uni atau Stanford Uni (cara 2)
+SELECT *
+FROM teachers
+WHERE school in ('Harvard University', 'Standford University')
+
+-- Mencari unique di kolom Universitasteachers
+SELECT DISTINCT(school)
+FROM teachers
+
+-- Mencari jumlah unique universitas
+SELECT COUNT(distinct(school)) AS jumlah_universitas
+FROM teachers
+
+-- Melihat berapa banyak jumlah data
+SELECT COUNT(*)
+FROM teachers
+
+Select *
+from teachers
+where salary > 30000 and school="MIT"
+
+-- Melihat data dosen bernama "James"teachers
+select *
+from teachers
+where first_name ='james'
+
+-- Melihat data dosen bernama "James"teachers
+select *
+from teachers
+where binary first_name ='james'
+
+-- Melihat jumlah data
+SELECT COUNT(*)
+From teachers
+
+-- Melihat total salary dosen
+SELECT sum(salary)
+from teachers
+
+-- Melihat gaji dosen tertinggi yang mengajar di MIT
+SELECT id, first_name, last_name, MAx(salary)
+from teachers
+where school = 'MIT'
+
+-- Melihat rata-rata gaji dosen yang mengajar di Standford Uni
+SELECT ceil(AVG(salary))
+from teachers
+where school = 'Standford University'
+
+-- Mencari dosen dengan first_name berawalan "sam"
+Select *
+from teachers
+where first_name Like 'sam%'
+
+-- Mencari jumlah dosen disetiap universitas
+Select school, count(id)
+from teachers
+group by school
+
+-- Mencari rata-rata gaji disetiap universitas
+select school, floor(AVG(salary))
+from teachers
+Group by school
+
+-- Sub-quary Menampikan  guru dengan gaji tertinggi
+Select *
+from teachers
+where salary=(
+	select MAx(salary)
+  	from teachers
+  )
+  
+ -- Menampilkan setiap dosen yang memliki gaji tertinggi disetiap universitas
+ SELECT *
+ from teachers
+ where (school, salary) in (
+   select school, max(salary)
+   from teachers
+   group by school
+   )
+   
+ -- Join table teachers dengan courses
+ select *
+ from teachers 
+ join courses on teachers.id=courses.teachers_id
+ order by teachers.id
+ 
+ -- Melihat dosen yang ,engajar kalkulus dengan gaji tertinggi (syntax = salah)
+ select teachers.id, teachers.first_name, teachers.Last_name, teachers.school, max(teachers.salary)
+ from teachers
+ join courses on teachers.id=courses.teachers_id
+ where courses.name='Calculus'
+ 
+ -- Nelihat dosen yang mengajar fisika dengan gaji terendah
+ select *
+ from teachers
+ where salary=(
+   select Min(salary)
+   from teachers
+   join courses on teachers.id=courses.teachers_id
+   where courses.name='Physics'
+     )
+     
+ -- melihat dosen dengan jumlah mata kuliah yang diajarkanteachers
+ select teachers.id, teachers.first_name, teachers.last_name, count(courses.id) AS total_matkul
+ from teachers
+ join courses on teachers.id=courses.teachers_id
+ group by teachers.id
+ Order by total_matkul DESC;
+ 
+ -- melihat dosen dengan jumlah mata kuliah yang diajarkan lebih dari 1
+ select teachers.id, teachers.first_name, teachers.last_name, count(courses.id) AS total_matkul
+ from teachers
+ join courses on teachers.id=courses.teachers_id
+ group by teachers.id
+ Having total_matkul>1
+ Order by total_matkul DESC;
